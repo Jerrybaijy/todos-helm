@@ -20,21 +20,6 @@ spec:
           image: jerrybaijy/todos-helm-frontend:latest
           ports:
             - containerPort: 80
-          env:
-            - name: BACKEND_SERVICE_NAME
-              value: backend
-            - name: BACKEND_SERVICE_PORT
-              value: "5000"
-          env:
-            - name: BACKEND_SERVICE_NAME
-              value: backend
-            - name: BACKEND_SERVICE_PORT
-              value: "5000"
-          env:
-            - name: BACKEND_SERVICE_NAME
-              value: backend
-            - name: BACKEND_SERVICE_PORT
-              value: "5000"
           readinessProbe:
             httpGet:
               path: /
