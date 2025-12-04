@@ -23,10 +23,10 @@ FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 
 # 复制自定义 Nginx 配置
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf.template
 
 # 暴露端口
 EXPOSE 80
 
-# 启动 Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# 启动脚本：替换环境变量并启动 Nginx
+CMD ["/bin/sh", "-c", "envsubst < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
