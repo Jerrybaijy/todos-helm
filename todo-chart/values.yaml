@@ -8,9 +8,10 @@ mysql:
   tag: 8.0
   imagePullPolicy: IfNotPresent
   rootPassword: "123456"
-  database: todo_db
+  database: todos_db
   user: jerry
   password: "000000"
+  replicaCount: 1
   persistence:
     enabled: true
     size: 1Gi

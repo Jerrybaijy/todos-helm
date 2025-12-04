@@ -1,32 +1,31 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ include "todo-chart.backend.fullname" . }}-secret
+  name: backend-secret
   namespace: {{ .Values.global.namespace }}
   labels:
-    {{- include "todo-chart.backend.labels" . | nindent 4 }}
+    app: backend
 type: Opaque
 stringData:
   SECRET_KEY: {{ .Values.backend.env.SECRET_KEY | quote }}
 ---
-# Backend Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "todo-chart.backend.fullname" . }}
+  name: backend
   namespace: {{ .Values.global.namespace }}
   labels:
-    {{- include "todo-chart.backend.labels" . | nindent 4 }}
+    app: backend
 
 spec:
   replicas: {{ .Values.backend.replicaCount }}
   selector:
     matchLabels:
-      {{- include "todo-chart.backend.selectorLabels" . | nindent 6 }}
+      app: backend
   template:
     metadata:
       labels:
-        {{- include "todo-chart.backend.selectorLabels" . | nindent 8 }}
+        app: backend
     spec:
       containers:
         - name: backend
@@ -34,18 +33,17 @@ spec:
           imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
           envFrom:
             - secretRef:
-                name: {{ include "todo-chart.backend.fullname" . }}-secret
+                name: backend-secret
             - configMapRef:
-                name: {{ include "todo-chart.mysql.fullname" . }}-config
+                name: mysql-config
             - secretRef:
-                name: {{ include "todo-chart.mysql.fullname" . }}-secret
+                name: mysql-secret
           ports:
             - containerPort: {{ .Values.backend.service.port }}
-              name: backend
           readinessProbe:
             httpGet:
               path: /api/todos
-              port: backend
+              port: {{ .Values.backend.service.port }}
             initialDelaySeconds: 30
             periodSeconds: 10
             timeoutSeconds: 5
@@ -53,7 +51,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /api/todos
-              port: backend
+              port: {{ .Values.backend.service.port }}
             initialDelaySeconds: 60
             periodSeconds: 10
             timeoutSeconds: 5
@@ -68,21 +66,17 @@ spec:
               "until nslookup mysql.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for mysql; sleep 2; done;"
             ]
 ---
-# Backend Service
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "todo-chart.backend.fullname" . }}
+  name: backend
   namespace: {{ .Values.global.namespace }}
   labels:
-    {{- include "todo-chart.backend.labels" . | nindent 4 }}
+    app: backend
 
 spec:
-  type: {{ .Values.backend.service.type }}
+  selector:
+    app: backend
   ports:
     - port: {{ .Values.backend.service.port }}
-      targetPort: backend
-      protocol: TCP
-      name: backend
-  selector:
-    {{- include "todo-chart.backend.selectorLabels" . | nindent 4 }}
+      targetPort: {{ .Values.backend.service.port }}
