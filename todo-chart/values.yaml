@@ -1,0 +1,44 @@
+# 全局配置
+global:
+  namespace: todos-helm
+
+# MySQL配置
+mysql:
+  image: mysql
+  tag: 8.0
+  imagePullPolicy: IfNotPresent
+  rootPassword: "123456"
+  database: todo_db
+  user: jerry
+  password: "000000"
+  persistence:
+    enabled: true
+    size: 1Gi
+  service:
+    type: ClusterIP
+    port: 3306
+
+# Backend配置
+backend:
+  replicaCount: 1
+  image:
+    repository: jerrybaijy/todos-helm-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 5000
+  env:
+    SECRET_KEY: your_secret_key_here
+
+# Frontend配置
+frontend:
+  replicaCount: 1
+  image:
+    repository: jerrybaijy/todos-helm-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: NodePort
+    port: 80
+    nodePort: 30080
