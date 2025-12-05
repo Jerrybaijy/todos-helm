@@ -77,20 +77,20 @@ build_frontend:
 # 构建并推送 Helm Chart
 publish_chart:
   stage: chart-publish
-  # 使用包含 Helm 的镜像，并设置正确的 entrypoint 以便执行 shell 命令
   image:
     name: alpine/helm:3.12.3
+    # 设置正确的 entrypoint 以便执行 shell 命令
     entrypoint: ["/bin/sh", "-c"]
   # 依赖于前后端镜像构建完成
   needs:
     - job: build_backend
-      # 如果后端
+      # 如果后端镜像构建失败，则跳过此 Job，否则都执行此 Job
       optional: true
     - job: build_frontend
       optional: true
   script:
     # 进入 Helm Chart 目录
-    - cd todo-chart
+    - cd $CHART_NAME
     
     # 配置 Helm 使用 GitLab Container Registry
     - helm registry login registry.gitlab.com -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
