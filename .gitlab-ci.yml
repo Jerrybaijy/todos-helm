@@ -34,15 +34,14 @@ stages:
 services:
   - docker:$DOCKER_VERSION-dind
 
-# 登录 Docker Hub
-before_script:
-  # 使用 stdin 输入密码，更加安全
-  - echo "$DOCKER_HUB_PASS" | docker login -u "$DOCKER_HUB_USER" --password-stdin
-
 # 构建后端镜像
 build_backend:
   stage: build
   image: docker:$DOCKER_VERSION
+  # 登录 Docker Hub
+  before_script:
+    # 使用 stdin 输入密码，更加安全
+    - echo "$DOCKER_HUB_PASS" | docker login -u "$DOCKER_HUB_USER" --password-stdin
   script:
     # 进入后端目录
     - cd $BACKEND_NAME
@@ -62,6 +61,10 @@ build_backend:
 build_frontend:
   stage: build
   image: docker:$DOCKER_VERSION
+  # 登录 Docker Hub
+  before_script:
+    # 使用 stdin 输入密码，更加安全
+    - echo "$DOCKER_HUB_PASS" | docker login -u "$DOCKER_HUB_USER" --password-stdin
   script:
     - cd $FRONTEND_NAME
     - docker build -t $IMAGE_PREFIX/$PROJECT_NAME-$FRONTEND_NAME:$CI_COMMIT_SHORT_SHA -t $IMAGE_PREFIX/$PROJECT_NAME-$FRONTEND_NAME:latest .
@@ -87,7 +90,7 @@ publish_chart:
       optional: true
   script:
     # 进入 Helm Chart 目录
-    - cd $CHART_NAME
+    - cd todo-chart
     
     # 配置 Helm 使用 GitLab Container Registry
     - helm registry login registry.gitlab.com -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
