@@ -78,8 +78,11 @@ publish_chart:
   image: alpine/helm:3.12.3
   # 依赖于前后端镜像构建完成
   needs:
-    - build_backend
-    - build_frontend
+    - job: build_backend
+      # 如果后端
+      optional: true
+    - job: build_frontend
+      optional: true
   script:
     # 进入 Helm Chart 目录
     - cd todo-chart
