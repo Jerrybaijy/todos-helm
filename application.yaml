@@ -9,7 +9,8 @@ spec:
     # GitLab Container Registry 地址
     repoURL: oci://registry.gitlab.com/jerrybai/todos-helm
     # Chart 版本号，可以使用具体版本或标签
-    targetRevision: latest
+    # 使用语义化版本范围，自动选择最新的0.1.x版本
+    targetRevision: ">=0.1.0 <0.2.0"
     # Chart 名称
     chart: todo-chart
 
