@@ -11,7 +11,7 @@ mysql:
   database: todos_db
   user: jerry
   password: "000000"
-  replicaCount: 1
+  replicaCount: 2
   persistence:
     enabled: true
     size: 1Gi
@@ -21,7 +21,7 @@ mysql:
 
 # Backend配置
 backend:
-  replicaCount: 1
+  replicaCount: 2
   image:
     repository: jerrybaijy/todos-helm-backend
     tag: latest
@@ -34,7 +34,7 @@ backend:
 
 # Frontend配置
 frontend:
-  replicaCount: 1
+  replicaCount: 2
   image:
     repository: jerrybaijy/todos-helm-frontend
     tag: latest
