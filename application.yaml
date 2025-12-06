@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: todos-app
+  name: todo-app
   namespace: argocd
 spec:
   project: default
@@ -9,7 +9,7 @@ spec:
     # GitLab Container Registry 地址，注意要带上 chart 名称
     repoURL: oci://registry.gitlab.com/jerrybai/todos-helm/todo-chart
     # Chart 版本号
-    targetRevision: "0.1.0_1b1662f8"
+    targetRevision: "0.1.0-5bff7469"
     # Chart 名称
     chart: todo-chart
 
