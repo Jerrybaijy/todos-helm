@@ -9,7 +9,7 @@ spec:
     # GitLab Container Registry 地址，注意要带上 chart 名称
     repoURL: oci://registry.gitlab.com/jerrybai/todos-helm/todo-chart
     # Chart 版本号
-    targetRevision: "0.1.0-5bff7469"
+    targetRevision: HEAD
     # Chart 名称
     chart: todo-chart
 

@@ -104,14 +104,18 @@ publish_chart:
     # 从 Chart.yaml 中读取基础版本号
     - CHART_VERSION=$(yq e '.version' Chart.yaml)
     
-    # 生成最终版本号（基础版本号 + 提交短哈希）
-    - FINAL_VERSION="${CHART_VERSION}-${CI_COMMIT_SHORT_SHA}"
+    # 生成最终版本号（基础版本号 + SHA）
+    - SHA_VERSION="${CHART_VERSION}-${CI_COMMIT_SHORT_SHA}"
+    # latest 版本号（基础版本号 + latest）
+    - LATEST_VERSION="${CHART_VERSION}-latest"
     
     # 打包 Chart
-    - helm package . --version "${FINAL_VERSION}"
+    - helm package . --version "${SHA_VERSION}"
+    - helm package . --version "${LATEST_VERSION}"
     
     # 推送 Chart 到 GitLab Container Registry
-    - helm push ${CHART_NAME}-${FINAL_VERSION}.tgz oci://${OCI_REGISTRY}
+    - helm push ${CHART_NAME}-${SHA_VERSION}.tgz oci://${OCI_REGISTRY}
+    - helm push ${CHART_NAME}-${LATEST_VERSION}.tgz oci://${OCI_REGISTRY}
     
 
   rules:
