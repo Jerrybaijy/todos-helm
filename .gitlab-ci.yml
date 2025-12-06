@@ -112,6 +112,10 @@ publish_chart:
     
     # 推送 Chart 到 GitLab Container Registry
     - helm push ${CHART_NAME}-${FINAL_VERSION}.tgz oci://${OCI_REGISTRY}
+    
+    # 同时推送 latest 标签
+    - helm package . --version "latest"
+    - helm push ${CHART_NAME}-latest.tgz oci://${OCI_REGISTRY}
   rules:
     # 当 Helm Chart 相关文件变化，或者前后端镜像更新时，都运行此 Job
     - changes:
